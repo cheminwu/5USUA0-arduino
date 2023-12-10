@@ -4,8 +4,8 @@
 #include <PubSubClient.h>
 
 
-const int RX = 8;
-const int TX = 9;
+const int RX = 10;
+const int TX = 11;
 
 //Network details
 const char apn[]  = "TM";
@@ -16,8 +16,6 @@ const char pass[] = "";
 const char* broker = "192.236.146.36";
 const char* username = "guest_mqtt";
 const char* password = "gym2go18";
-const char* topicOut = "test";
-const char* topicIn = "test";
 
 
 SoftwareSerial SerialAT(RX,TX); // RX, TX
@@ -27,7 +25,7 @@ PubSubClient mqtt(client);
 
 
 String PK = "";
-
+String time = "0";
 
 void publish(const char* topic, const char* message){
     mqtt.publish(topic, message);
@@ -39,13 +37,18 @@ String subscribePK(){
     return PK;
 }
 
+String startTime(){
+    return time;
+}
 
 
 void gym2go_GSM_setup(){
 
-    Serial.begin(9600);
     SerialAT.begin(9600);
 
+    if(!SerialAT.available()){    
+      // Serial.println("Serial not available.");
+    }
     Serial.println("System start.");
     modem.restart();
     Serial.println("Modem: " + modem.getModemInfo());
@@ -70,16 +73,24 @@ void gym2go_GSM_setup(){
 
     mqtt.setServer(broker, 1883);
     mqtt.setCallback(mqttCallback);
-    Serial.println("Connecting to MQTT Broker: " + String(broker));
+    Serial.println("Connecting to MQTT Broker.");
     while(mqttConnect()==false) continue;
     Serial.println();
+    delay(3000);
 }
 
 void gym2go_GSM_in_loop(){
-  if(mqtt.connected())
-  {
-    mqtt.loop();
-  }
+  // if(mqtt.connected())
+  // {
+  //   // Serial.println("MQTT connected.");
+  //   mqtt.loop();
+  //   // Serial.println("loop.");
+
+  // }else{
+  //   Serial.println("reconnecting.");
+  //    while(mqttConnect()==false) continue;
+  // }
+  mqtt.loop();
 }
 
 boolean mqttConnect()
@@ -90,18 +101,38 @@ boolean mqttConnect()
     return false;
   }
   Serial.println("Connected to broker.");
-  mqtt.subscribe("publicKey");
+  mqtt.subscribe("key");
+  mqtt.subscribe("time");
+  Serial.println("MQTT topic 'publickey' subscribed.");
+  Serial.println("MQTT topic 'time' subscribed.");
   mqtt.subscribe("test");
+  Serial.println("MQTT topic 'test' subscribed.");
+
   publish("start", "0");
+  Serial.println("MQTT topic 'start' published.");
+
   return mqtt.connected();
 }
 
-void mqttCallback(char* topic, byte* payload, unsigned int len)
+void mqttCallback(char* topic_, byte* payload, unsigned int len)
 {
-  Serial.print("Message receive: ");
-  Serial.write(payload, len);
-  if(topic == "publicKey"){
-    PK = (char *)payload;
+  String topic(topic_);
+  // Serial.print("Message receive: ");
+  // Serial.print(topic);
+  // Serial.print(": ");
+  // Serial.println(String((char *)payload));
+  if(topic == "key"){
+    PK = String((char *)payload).substring(0,16);
+    //  Serial.print("set key: ");
+    //  Serial.println(PK);
+  }
+
+  if(topic == "time"){
+    // Serial.println("receive time");
+    time = String((char *)payload);
+    time = time.substring(0, time.indexOf("*"));
+    // Serial.println(time);
+    //  Serial.println(PK);
   }
   Serial.println();
 }

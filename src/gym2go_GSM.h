@@ -6,6 +6,7 @@
 
 void publish(String topic, String message);
 String subscribePK();
+String startTime();
 void gym2go_GSM_setup();
 void gym2go_GSM_in_loop();
 boolean mqttConnect();

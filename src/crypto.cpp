@@ -1,93 +1,62 @@
 #include "crypto.h"
-#include <Ed25519.h>
+#include "MD5.h"
+#include "StringSplitter.h"
 
-//bool generate_time;
-uint8_t publicKey[32];
-//uint8_t message[2];
-//size_t len;
-//uint8_t signature[64];
 
-void setPublicKey(String hexPublicKey){
-  hexCharacterStringToBytes(publicKey, hexPublicKey.c_str());
-  // Serial.print("hex public key: ");
-  // Serial.println(hexPublicKey);
+String key;
+
+void setKey(String pKey){
+
+  key = pKey;
+//   Serial.print("set key: ");
+//   Serial.println(key);
 }
 
-bool verify(String hexSignature, String message){
-  // Serial.print("hex signature: ");
-  // Serial.println(hexSignature);
-  // Serial.print("message: ");
-  // Serial.println(message);
-  uint8_t signature[64] = {0};
-  hexCharacterStringToBytes(signature, hexSignature.c_str());
+bool verify(String content, String data[], long current_time){
 
-  byte message_buffer[message.length() + 1];
-  message.getBytes(message_buffer, message.length() + 1);
-  bool flag = Ed25519::verify	(signature, publicKey,message_buffer,sizeof(message));
-  // Serial.print("result: ");
+  // Serial.println(content);
+
+  StringSplitter *splitter = new StringSplitter(content, ',',6); 
+  String prefix = splitter->getItemAtIndex(0);
+  String userId = splitter->getItemAtIndex(1);
+  String lockerId = splitter->getItemAtIndex(2);
+  String flag = splitter->getItemAtIndex(3);
+  String qrTimeStr = splitter->getItemAtIndex(4);
+  String sign = splitter->getItemAtIndex(5);
+
+  char *endPtr;
+  long qrTime = strtol(qrTimeStr.c_str(), &endPtr, qrTimeStr.length());
+  // Serial.println(current_time);
+  // Serial.println(qrTime);
+  if(current_time - qrTime > 120){
+    Serial.println("the code was time out.");
+    return false;
+  }
+  String raw = userId + "," + lockerId + "," + flag + "," + qrTimeStr + key;
+
+//   Serial.println(raw);
+  unsigned char* hash=MD5::make_hash(raw.c_str());
+  char *md5str = MD5::make_digest(hash, 16);
+
+  // Serial.println(userId);
+  // Serial.println(lockerId);
   // Serial.println(flag);
-  return flag;
+  // Serial.println(qrTimeStr);
+  // Serial.println(sign);
+  // Serial.println(String(md5str));
+
+  // Serial.println(String(md5str) == sign);
+  if(String(md5str) == sign){
+
+    data[0] = prefix;
+    data[1] = userId;
+    data[2] = lockerId;
+    data[3] = flag;
+    data[4] = qrTimeStr;
+    data[5] = sign;
+    return true;
+  }else{
+    Serial.println("false code.");
+    return false;
+  }
 }
-
-
-
-void hexCharacterStringToBytes(byte *byteArray, const char *hexString)
-{
-    bool oddLength = strlen(hexString) & 1;
-
-    byte currentByte = 0;
-    byte byteIndex = 0;
-
-    for (byte charIndex = 0; charIndex < strlen(hexString); charIndex++)
-    {
-        bool oddCharIndex = charIndex & 1;
-
-        if (oddLength)
-        {
-            // If the length is odd
-            if (oddCharIndex)
-            {
-                // odd characters go in high nibble
-                currentByte = nibble(hexString[charIndex]) << 4;
-            }
-            else
-            {
-                // Even characters go into low nibble
-                currentByte |= nibble(hexString[charIndex]);
-                byteArray[byteIndex++] = currentByte;
-                currentByte = 0;
-            }
-        }
-        else
-        {
-            // If the length is even
-            if (!oddCharIndex)
-            {
-                // Odd characters go into the high nibble
-                currentByte = nibble(hexString[charIndex]) << 4;
-            }
-            else
-            {
-                // Odd characters go into low nibble
-                currentByte |= nibble(hexString[charIndex]);
-                byteArray[byteIndex++] = currentByte;
-                currentByte = 0;
-            }
-        }
-    }
-}
-
-byte nibble(char c)
-{
-    if (c >= '0' && c <= '9')
-        return c - '0';
-
-    if (c >= 'a' && c <= 'f')
-        return c - 'a' + 10;
-
-    if (c >= 'A' && c <= 'F')
-        return c - 'A' + 10;
-
-    return 0; // Not a valid hexadecimal character
-}
-

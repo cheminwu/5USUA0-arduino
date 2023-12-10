@@ -1,9 +1,9 @@
 #ifndef CRYPTO_H
 #define CRYPTO_H
 #include <Arduino.h>
+#include "MD5.h"
+#include "StringSplitter.h"
 
-void setPublicKey(String hexPublicKey);
-bool verify(String hexSignature, String message);
-void hexCharacterStringToBytes(byte *byteArray, const char *hexString);
-byte nibble(char c);
+void setKey(String pKey);
+bool verify(String content, String data[], long current_time);
 #endif
