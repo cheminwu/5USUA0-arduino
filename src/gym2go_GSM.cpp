@@ -27,8 +27,8 @@ PubSubClient mqtt(client);
 String PK = "";
 String time = "0";
 
-void publish(const char* topic, const char* message){
-    mqtt.publish(topic, message);
+void publish(String topic, String message){
+    mqtt.publish(topic.c_str(), message.c_str());
 }
 
 
