@@ -64,7 +64,7 @@ void loop() {
 
 
       //send the log
-      publish("history", "{\"requestId\":\"" + data[1] + "\",  \"type\":\"unlock\"}");
+      publish("history", "{\"requestId\":" + data[1] + ",  \"type\":\"unlock\"}");
     }
   }
   
