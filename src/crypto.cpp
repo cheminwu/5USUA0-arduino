@@ -18,7 +18,7 @@ bool verify(String content, String data[], long current_time){
 
   StringSplitter *splitter = new StringSplitter(content, ',',6); 
   String prefix = splitter->getItemAtIndex(0);
-  String userId = splitter->getItemAtIndex(1);
+  String requestId = splitter->getItemAtIndex(1);
   String lockerId = splitter->getItemAtIndex(2);
   String flag = splitter->getItemAtIndex(3);
   String qrTimeStr = splitter->getItemAtIndex(4);
@@ -32,7 +32,7 @@ bool verify(String content, String data[], long current_time){
     Serial.println("the code was time out.");
     return false;
   }
-  String raw = userId + "," + lockerId + "," + flag + "," + qrTimeStr + key;
+  String raw = requestId + "," + lockerId + "," + flag + "," + qrTimeStr + key;
 
 //   Serial.println(raw);
   unsigned char* hash=MD5::make_hash(raw.c_str());
@@ -49,7 +49,7 @@ bool verify(String content, String data[], long current_time){
   if(String(md5str) == sign){
 
     data[0] = prefix;
-    data[1] = userId;
+    data[1] = requestId;
     data[2] = lockerId;
     data[3] = flag;
     data[4] = qrTimeStr;

@@ -50,8 +50,10 @@ void loop() {
     if(verify(qrString, data, current_time)){
       //**********************************************************
       //unlock the door
+
+      
       //**********************************************************
-      Serial.print("user: ");
+      Serial.print("request: ");
       Serial.print(data[1]);
       Serial.print(" locker: ");
       Serial.print(data[2]);
@@ -59,6 +61,10 @@ void loop() {
       Serial.println(data[3]);
       door_unlock_blink();
       Serial.println("unlock the door.");
+
+
+      //send the log
+      publish("history", "{\"requestId\":\"" + data[1] + "\",  \"type\":\"unlock\"}");
     }
   }
   
