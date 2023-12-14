@@ -1,7 +1,17 @@
 #include "src/crypto.h"
 #include "src/gym2go_GSM.h"
 #include "src/scanner.h"
+#include "src/lockerware.h"
+//lockernumbers
+/*
+#define lock1 22
+#define lock2 23
+#define lock3 24
 
+#define equipmentSensor1 30
+#define equipmentSensor2 31
+#define equipmentSensor3 32
+*/
 int count = 0;
 long GLOBEL_TIME = 0;
 
@@ -10,6 +20,10 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(13, OUTPUT);
+  pinMode(22, OUTPUT);
+  digitalWrite(22,LOW);
+
+  
   digitalWrite(13, LOW);
 
   gym2go_GSM_setup();
@@ -50,7 +64,10 @@ void loop() {
     if(verify(qrString, data, current_time)){
       //**********************************************************
       //unlock the door
-
+      int locker = data[2].toInt();
+      unlock(locker);
+      delay(1000);
+      lock(locker);
       
       //**********************************************************
       Serial.print("request: ");
