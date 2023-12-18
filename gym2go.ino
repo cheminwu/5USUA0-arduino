@@ -8,9 +8,9 @@
 #define lock2 23
 #define lock3 24
 
-#define equipmentSensor1 30
-#define equipmentSensor2 31
-#define equipmentSensor3 32
+#define equipmentSensor1 a0
+#define equipmentSensor2 a1
+#define equipmentSensor3 a2
 */
 int count = 0;
 long GLOBEL_TIME = 0;
@@ -19,12 +19,11 @@ long start_time = 0;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(13, OUTPUT);
-  pinMode(22, OUTPUT);
-  digitalWrite(22,LOW);
-
-  
+  pinMode(13, OUTPUT);  
   digitalWrite(13, LOW);
+
+  //set all of the lockerpins and 
+  setupLockerPins();
 
   gym2go_GSM_setup();
   // subscribe key and globel time.
