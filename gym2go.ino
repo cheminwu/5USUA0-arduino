@@ -64,8 +64,13 @@ void loop() {
       //**********************************************************
       //unlock the door
       int locker = data[2].toInt();
+      int flag = data[3].toInt();
       unlock(locker);
-      delay(5000);
+      if (flag == 0){
+        waitTakeout(locker);
+      }else{
+        waitReturn(locker);
+      }
       lock(locker);
       
       //**********************************************************
