@@ -1,6 +1,10 @@
 #ifndef lockerware
 #define lockerware
 
+//setup the pins for the lockers
+void setupLockerPins();
+
+
 /*locks lockernumber
     when defining which pins will go to the locks
     please use lockn=pin, with n being the lockernumber*/
