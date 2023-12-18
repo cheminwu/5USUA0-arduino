@@ -28,6 +28,44 @@ String PK = "";
 String time = "0";
 
 void publish(String topic, String message){
+
+    if(!mqtt.connected())
+    {
+        Serial.println("MQTT disconnected");
+        if (!modem.isNetworkConnected()) {
+            Serial.println("Network disconnected");
+
+            SerialAT.begin(9600);
+            modem.restart();
+            Serial.println("Modem: " + modem.getModemInfo());
+            modem.simUnlock("1503");
+            Serial.println("Searching for telco provider.");
+                if(!modem.waitForNetwork())
+                {
+                    Serial.println("fail");
+                    while(true);
+                }
+                Serial.println("Connected to telco.");
+                Serial.println("Signal Quality: " + String(modem.getSignalQuality()));
+
+                Serial.println("Connecting to GPRS network.");
+                if (!modem.gprsConnect(apn, user, pass))
+                {
+                    Serial.println("fail");
+                    while(true);
+                }
+                if (modem.isNetworkConnected()) { Serial.println("Network connected"); }
+                Serial.println("Connected to GPRS: " + String(apn));
+
+                mqtt.setServer(broker, 1883);
+                mqtt.setCallback(mqttCallback);
+                Serial.println("Connecting to MQTT Broker.");
+        }
+        while(mqttConnect()==false) continue;
+    }
+
+//    Serial.println(topic);
+//    Serial.println(message);
     mqtt.publish(topic.c_str(), message.c_str());
 }
 
@@ -76,21 +114,49 @@ void gym2go_GSM_setup(){
     Serial.println("Connecting to MQTT Broker.");
     while(mqttConnect()==false) continue;
     Serial.println();
+    mqtt.subscribe("key");
+    mqtt.subscribe("time");
+    Serial.println("MQTT topic 'publickey' subscribed.");
+    Serial.println("MQTT topic 'time' subscribed.");
+    mqtt.subscribe("test");
+    Serial.println("MQTT topic 'test' subscribed.");
+
+    publish("start", "0");
+    Serial.println("MQTT topic 'start' published.");
     delay(3000);
 }
 
 void gym2go_GSM_in_loop(){
-  // if(mqtt.connected())
-  // {
-  //   // Serial.println("MQTT connected.");
-  //   mqtt.loop();
-  //   // Serial.println("loop.");
-
-  // }else{
-  //   Serial.println("reconnecting.");
-  //    while(mqttConnect()==false) continue;
-  // }
-  mqtt.loop();
+//    if(!mqtt.connected())
+//    {
+//        Serial.println("MQTT disconnected");
+//        if (!modem.isNetworkConnected()) {
+//            Serial.println("Network disconnected");
+//            Serial.println("Searching for telco provider.");
+//                if(!modem.waitForNetwork())
+//                {
+//                    Serial.println("fail");
+//                    while(true);
+//                }
+//                Serial.println("Connected to telco.");
+//                Serial.println("Signal Quality: " + String(modem.getSignalQuality()));
+//
+//                Serial.println("Connecting to GPRS network.");
+//                if (!modem.gprsConnect(apn, user, pass))
+//                {
+//                    Serial.println("fail");
+//                    while(true);
+//                }
+//                if (modem.isNetworkConnected()) { Serial.println("Network connected"); }
+//                Serial.println("Connected to GPRS: " + String(apn));
+//
+//                mqtt.setServer(broker, 1883);
+//                mqtt.setCallback(mqttCallback);
+//                Serial.println("Connecting to MQTT Broker.");
+//        }
+//        while(mqttConnect()==false) continue;
+//    }
+    mqtt.loop();
 }
 
 boolean mqttConnect()
@@ -101,15 +167,6 @@ boolean mqttConnect()
     return false;
   }
   Serial.println("Connected to broker.");
-  mqtt.subscribe("key");
-  mqtt.subscribe("time");
-  Serial.println("MQTT topic 'publickey' subscribed.");
-  Serial.println("MQTT topic 'time' subscribed.");
-  mqtt.subscribe("test");
-  Serial.println("MQTT topic 'test' subscribed.");
-
-  publish("start", "0");
-  Serial.println("MQTT topic 'start' published.");
 
   return mqtt.connected();
 }

@@ -66,7 +66,7 @@ void loop() {
       //unlock the door
       int locker = data[2].toInt();
       unlock(locker);
-      delay(1000);
+      delay(5000);
       lock(locker);
       
       //**********************************************************
@@ -82,6 +82,8 @@ void loop() {
 
       //send the log
       publish("history", "{\"requestId\":" + data[1] + ",  \"type\":\"unlock\"}");
+      // publish("start", "0");
+      // publish("history", "aaa");
     }
   }
   
