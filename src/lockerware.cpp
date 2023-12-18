@@ -70,21 +70,21 @@ void waitTakeout(int lockernumber){
 
 {
 case 1:
-    while (sensor>=50||timer.read()<=5000)
+    while (sensor>=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
     }
     break;
 
 case 2:
-    while (sensor>=50||timer.read()<=5000)
+    while (sensor>=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor2);
     }
     break;
 
 case 3:
-    while (sensor>=50||timer.read()<=5000)
+    while (sensor>=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor3);
     }
@@ -99,21 +99,21 @@ void waitReturn(int lockernumber){
     switch (lockernumber)
 {
 case 1:
-    while (sensor<=50||timer.read()<=5000)
+    while (sensor<=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
     }
     break;
 
 case 2:
-    while (sensor<=50||timer.read()<=5000)
+    while (sensor<=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
     }
     break;
 
 case 3:
-    while (sensor<=50||timer.read()<=5000)
+    while (sensor<=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
     }
