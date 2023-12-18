@@ -64,7 +64,7 @@ case 3:
 }
 
 void waitTakeout(int lockernumber){
-    bool sensor=1;
+    int sensor=100;
     timer.start();
     switch (lockernumber)
 
@@ -94,7 +94,7 @@ timer.stop();
 }
 
 void waitReturn(int lockernumber){
-    bool sensor=0;
+    int sensor=0;
     timer.start();
     switch (lockernumber)
 {
