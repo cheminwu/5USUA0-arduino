@@ -49,14 +49,17 @@ void setup() {
 }
 
 void loop() {
+  // do not delete these code
+
+ // do not delete these code
   start_time = millis()/1000;
   // Serial.print("start: ");
   // Serial.println(start_time);
   String qrString  = get_qr_string();
+  //  Serial.print("the qr code is: ");
+    // Serial.println(qrString);
   qrString = qrString.substring(0,qrString.indexOf("*"));
   if(qrString.startsWith("G2G")){
-    // Serial.print("the qr code is: ");
-    // Serial.println(qrString);
 
     String data[5] = {};
     long current_time = GLOBEL_TIME + start_time;
@@ -102,6 +105,7 @@ void loop() {
 
   count = count + 1; 
   delay(1000);
+  // Serial.println("Heartbeat.");
 
 }
 

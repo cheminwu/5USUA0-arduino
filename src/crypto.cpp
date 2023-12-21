@@ -42,8 +42,8 @@ bool verify(String content, String data[], long current_time){
   // Serial.println(lockerId);
   // Serial.println(flag);
   // Serial.println(qrTimeStr);
-  // Serial.println(sign);
-  // Serial.println(String(md5str));
+  Serial.println(sign);
+  Serial.println(String(md5str));
 
   // Serial.println(String(md5str) == sign);
   if(String(md5str) == sign){

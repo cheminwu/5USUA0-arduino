@@ -10,6 +10,7 @@ void scanner_setup(){
 }
 
 String get_qr_string(){
+    SerialScanner.begin(9600);
     // Serial.println("into get qr string."); // Print the Byte
     char customBuffer[200];
      int customBufferIndex = 0;

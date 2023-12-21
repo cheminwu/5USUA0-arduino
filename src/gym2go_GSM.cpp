@@ -28,44 +28,44 @@ String PK = "";
 String time = "0";
 
 void publish(String topic, String message){
-
+    SerialAT.begin(9600);
     if(!mqtt.connected())
     {
         Serial.println("MQTT disconnected");
         if (!modem.isNetworkConnected()) {
             Serial.println("Network disconnected");
 
-            SerialAT.begin(9600);
-            modem.restart();
-            Serial.println("Modem: " + modem.getModemInfo());
-            modem.simUnlock("1503");
-            Serial.println("Searching for telco provider.");
-                if(!modem.waitForNetwork())
-                {
-                    Serial.println("fail");
-                    while(true);
-                }
-                Serial.println("Connected to telco.");
-                Serial.println("Signal Quality: " + String(modem.getSignalQuality()));
+    //         SerialAT.begin(9600);
+    //         modem.restart();
+    //         Serial.println("Modem: " + modem.getModemInfo());
+    //         modem.simUnlock("1503");
+    //         Serial.println("Searching for telco provider.");
+    //             if(!modem.waitForNetwork())
+    //             {
+    //                 Serial.println("fail");
+    //                 while(true);
+    //             }
+    //             Serial.println("Connected to telco.");
+    //             Serial.println("Signal Quality: " + String(modem.getSignalQuality()));
 
-                Serial.println("Connecting to GPRS network.");
-                if (!modem.gprsConnect(apn, user, pass))
-                {
-                    Serial.println("fail");
-                    while(true);
-                }
-                if (modem.isNetworkConnected()) { Serial.println("Network connected"); }
-                Serial.println("Connected to GPRS: " + String(apn));
+    //             Serial.println("Connecting to GPRS network.");
+    //             if (!modem.gprsConnect(apn, user, pass))
+    //             {
+    //                 Serial.println("fail");
+    //                 while(true);
+    //             }
+    //             if (modem.isNetworkConnected()) { Serial.println("Network connected"); }
+    //             Serial.println("Connected to GPRS: " + String(apn));
 
-                mqtt.setServer(broker, 1883);
-                mqtt.setCallback(mqttCallback);
-                Serial.println("Connecting to MQTT Broker.");
+    //             mqtt.setServer(broker, 1883);
+    //             mqtt.setCallback(mqttCallback);
+    //             Serial.println("Connecting to MQTT Broker.");
         }
         while(mqttConnect()==false) continue;
     }
 
-//    Serial.println(topic);
-//    Serial.println(message);
+   Serial.print("MQTT topic '" + topic + "' published.");
+  //  Serial.println(message);
     mqtt.publish(topic.c_str(), message.c_str());
 }
 
@@ -127,6 +127,7 @@ void gym2go_GSM_setup(){
 }
 
 void gym2go_GSM_in_loop(){
+      // SerialAT.begin(9600);
 //    if(!mqtt.connected())
 //    {
 //        Serial.println("MQTT disconnected");
@@ -157,6 +158,7 @@ void gym2go_GSM_in_loop(){
 //        while(mqttConnect()==false) continue;
 //    }
     mqtt.loop();
+    // Serial.println("MOTT looped.");
 }
 
 boolean mqttConnect()
