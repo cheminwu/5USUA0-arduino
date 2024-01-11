@@ -75,6 +75,10 @@ void loop() {
         waitReturn(locker);
       }
       lock(locker);
+      if (flag==1){
+        delay(5000);
+        checkReturn(locker);
+      }
       
       //**********************************************************
       Serial.print("request: ");
