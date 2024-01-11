@@ -8,9 +8,13 @@ Timer timer;
 #define lock2 23
 #define lock3 24
 
-#define equipmentSensor1 A0
-#define equipmentSensor2 A1
-#define equipmentSensor3 A2
+#define equipmentSensor1 'a0'
+#define equipmentSensor2 'a1'
+#define equipmentSensor3 'a2'
+
+#define hall1 30
+#define hall2 31
+#define hall3 32
 
 void setupLockerPins(){
     pinMode(lock1, OUTPUT);
@@ -73,6 +77,8 @@ case 1:
     while (sensor>=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
+        Serial.print("sensorvalue: ");
+        Serial.println(sensor);
     }
     break;
 
@@ -80,6 +86,8 @@ case 2:
     while (sensor>=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor2);
+        Serial.print("sensorvalue: ");
+        Serial.println(sensor);
     }
     break;
 
@@ -87,6 +95,8 @@ case 3:
     while (sensor>=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor3);
+        Serial.print("sensorvalue: ");
+        Serial.println(sensor);
     }
     break;
 }
@@ -102,6 +112,8 @@ case 1:
     while (sensor<=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
+        Serial.print("sensorvalue: ");
+        Serial.println(sensor);
     }
     break;
 
@@ -109,6 +121,8 @@ case 2:
     while (sensor<=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
+        Serial.print("sensorvalue: ");
+        Serial.println(sensor);
     }
     break;
 
@@ -116,8 +130,46 @@ case 3:
     while (sensor<=50&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
+        Serial.print("sensorvalue: ");
+        Serial.println(sensor);
     }
     break;
 }
 timer.stop();
+}
+
+void checkReturn(int lockernumber){
+    int weightCheck=0;
+    bool doorlock=0;
+    switch(lockernumber){
+        case 1:
+        weightCheck = analogRead(equipmentSensor1);
+        doorlock= digitalRead(hall1);
+        break;
+        case 2:
+        weightCheck = analogRead(equipmentSensor2);
+        doorlock= digitalRead(hall2);
+        break;
+        case 3:
+        weightCheck = analogRead(equipmentSensor3);
+        doorlock= digitalRead(hall3);
+        break;
+    }
+    /*this might need to move into the switch statement because of the difference
+    in sensitivity of the sensors*/ 
+    if(weightCheck>=150 && doorlock==1)
+    {
+        //object succesfully returned,send return succesful
+        Serial.print("item in locker" );
+        Serial.print(lockernumber);
+        Serial.println(" has been returned succesfully");
+
+    }
+    else
+    {
+        //object missing or door not closed, send return unsuccesful
+        Serial.print("item in locker" );
+        Serial.print(lockernumber);
+        Serial.println(" has not been returned, initiate doxxing protocol");
+    }
 }
