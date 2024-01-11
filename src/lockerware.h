@@ -22,5 +22,6 @@ void waitTakeout(int lockernumber);
     uses same equipmentSensorn=pin as above*/
 void waitReturn(int lockernumber);
 
+void checkReturn(int lockernumber);
 
 #endif
