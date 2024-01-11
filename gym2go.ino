@@ -12,6 +12,7 @@
 #define equipmentSensor2 a1
 #define equipmentSensor3 a2
 */
+;
 int count = 0;
 long GLOBEL_TIME = 0;
 
