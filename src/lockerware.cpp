@@ -68,13 +68,13 @@ case 3:
 }
 
 void waitTakeout(int lockernumber){
-    int sensor=100;
+    int sensor=400;
     timer.start();
     switch (lockernumber)
 
 {
 case 1:
-    while (sensor>=50&&timer.read()<=5000)
+    while (sensor>=300&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
         Serial.print("sensorvalue: ");
@@ -83,7 +83,7 @@ case 1:
     break;
 
 case 2:
-    while (sensor>=50&&timer.read()<=5000)
+    while (sensor>=300&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor2);
         Serial.print("sensorvalue: ");
@@ -92,7 +92,7 @@ case 2:
     break;
 
 case 3:
-    while (sensor>=50&&timer.read()<=5000)
+    while (sensor>=300&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor3);
         Serial.print("sensorvalue: ");
@@ -109,7 +109,7 @@ void waitReturn(int lockernumber){
     switch (lockernumber)
 {
 case 1:
-    while (sensor<=50&&timer.read()<=5000)
+    while (sensor<=400&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
         Serial.print("sensorvalue: ");
@@ -118,7 +118,7 @@ case 1:
     break;
 
 case 2:
-    while (sensor<=50&&timer.read()<=5000)
+    while (sensor<=400&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
         Serial.print("sensorvalue: ");
@@ -127,7 +127,7 @@ case 2:
     break;
 
 case 3:
-    while (sensor<=50&&timer.read()<=5000)
+    while (sensor<=400&&timer.read()<=5000)
     {
         sensor=analogRead(equipmentSensor1);
         Serial.print("sensorvalue: ");
@@ -157,7 +157,7 @@ void checkReturn(int lockernumber){
     }
     /*this might need to move into the switch statement because of the difference
     in sensitivity of the sensors*/ 
-    if(weightCheck>=150 && doorlock==1)
+    if(weightCheck>=250 && doorlock==1)
     {
         //object succesfully returned,send return succesful
         Serial.print("item in locker" );
